@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var Vendedor = require("../../../database/collections/vendedor");
 var Propiedad = require("../../../database/collections/propiedad");
+var Usuario = require("../../../database/collections/usuario");
 
-//creacion
+//creacion Vendedor
 
 router.post("/vendedor", (req, res) => {
   if(req.body.Nombres == " " && req.body.Numero_de_celular == " " ){
@@ -128,9 +129,44 @@ router.get(/propiedad\/[a-z0-9]{24,24}$/, (req, res) => {
     res.status(200).json(docs);
   });
 });
+//creacion Usuario
+router.post('/usuario', (req, res) =>{
+    console.log('POST /api/usuario')
+    console.log(req.body)
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    let usuario = new Usuario()
+    usuario.Nombres =req.body.Nombres
+    usuario.Apellidos=req.body.Apellidos
+    usuario.Telefono = req.body.Telefono
+    usuario.Correo_Electronico = req.body.Correo_Electronico
+    usuario.Password = req.body.Password
+
+
+
+
+    Usuario.findOne({'Correo_Electronico':usuario.Correo_Electronico},(err,e)=>{
+        if(e){
+            console.log('email repetido')
+            res.status(404).send({message:`Este email ${usuario.Correo_Electronico} ya se encuentra registrado`})
+        }
+        else{
+            usuario.save((err, usertStored) =>{
+                if(err) {
+                  res.status(404).send({messaje: `Error al salvar la base de datos:${err}`})
+                 console.log(err)
+                }
+                res.status(200).send(usertStored)
+            })
+        }
+
+
+    })
+
+  usuario.save((err, usertStored) =>{
+        if(err) res.status(500).send({messaje: `Error al savar la base de datos:${err}`})
+
+    })
+
 });
+/* GET home page. */
 module.exports = router;
