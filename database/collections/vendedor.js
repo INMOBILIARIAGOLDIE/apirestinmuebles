@@ -1,5 +1,5 @@
 const mongoose = require("../connect");
-var userSchema = {
+var vendedorSchema = {
   Nombres : String,
   Apellidos : String,
   Numero_de_celular : Number,
@@ -7,5 +7,5 @@ var userSchema = {
   Sexo : String
 
 };
-var vendedor = mongoose.model("vendedor", userSchema);
+var vendedor = mongoose.model("vendedor", vendedorSchema);
 module.exports = vendedor;

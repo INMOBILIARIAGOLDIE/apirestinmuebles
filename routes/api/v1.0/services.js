@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Vendedor = require("../../../database/collections/vendedor");
 var Propiedad = require("../../../database/collections/propiedad");
+
 //creacion
 
 router.post("/vendedor", (req, res) => {
