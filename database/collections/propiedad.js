@@ -19,6 +19,7 @@ var userSchema = {
   Latitud: String,
   Escuelas_Cercanas: String,
   Descripcion: String,
+  Gallery: Array
 
 
 };
