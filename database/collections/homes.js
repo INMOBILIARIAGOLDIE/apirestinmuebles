@@ -1,5 +1,7 @@
 const mongoose = require("../connect");
-var userSchema = {
+var mon = require('mongoose');
+var Schema = mon.Schema;
+var propiedadSchema = new Schema({
   Ciudad : String,
   Zona : String,
   Direccion : String,
@@ -16,12 +18,12 @@ var userSchema = {
   Piscina :String,
   Parqueos: String,
   Numero_de_Parqueos : Number,
-  Latitud: String,
+  Latitud: Number,
   Escuelas_Cercanas: String,
   Descripcion: String,
-  Gallery: Array
-
+  Gallery: Array,
+  date:{type:Date,default:Date.now()}
 
 };
-var propiedad = mongoose.model("propiedad", userSchema);
-module.exports = propiedad;
+var home = mongoose.model("homes", homeSchema);
+module.exports = home;
