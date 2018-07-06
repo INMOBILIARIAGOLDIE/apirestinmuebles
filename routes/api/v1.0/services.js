@@ -7,6 +7,7 @@ var router = express.Router();
 var Home = require("../../../database/collections/homes");
 var Usuario = require("../../../database/collections/usuario");
 var Img = require("../../../database/collections/img");
+var IP = require('../../../database/collections/IP');
 
 //imagen
 var storage = multer.diskStorage({
@@ -121,28 +122,23 @@ router.post("/home", (req, res) => {
 var home = {
 
   Ciudad : req.body.Ciudad,
-  Zona : req.body.Zona,
+  Tipo : req.body.Tipo,
+  Estado:req.body.Estado,
   Direccion : req.body.Direccion,
   Precio: req.body.Precio,
-  Fecha_de_Entrega: req.body.Fecha_de_Entrega,
-  Fecha_de_Publicacion: req.body.Fecha_de_Publicacion,
   Año_de_Construccion: req.body.Año_de_Construccion,
   Superficie_de_Terreno: req.body.Superficie_de_Terreno,
-  Superficie_Construida: req.body.Superficie_de_Construida,
-  Servicios: req.body.Servicios,
+  Numero_de_Cuartos: req.body.Numero_de_Cuartos,
   Numero_de_Baños: req.body.Numero_de_Baños,
-  Pisos: req.body.Pisos,
-  Elevedor:req.body.Elevedor,
-  Piscina :req.body.Piscina,
-  Parqueos: req.body.Parqueos,
-  Numero_de_Parqueos : req.body.Numero_de_Parqueos,
   Latitud: req.body.Latitud,
-  Escuelas_Cercanas: req.body.Escuelas_cercanas,
+  Longitud: req.body.Longitud,
+  Vecindario: req.body.Vecindario,
   Descripcion: req.body.Descripcion,
   Gallery: "",
+  Numero_de_Contacto: req.body.Numero_de_Contacto
 };
 
-var homeData = new Home(home;
+var homeData = new Home(home);
 homeData.save().then( () =>{
   homeid=rr._id;                           //variable que guarda el id de home
   res.status(200).json({
@@ -152,22 +148,23 @@ homeData.save().then( () =>{
   });
   });
 //read
+router.get("/home", (req, res, next) => {
 var params = req.query;
     console.log(params);
-    var city = params.city;
-    var tipo = params.tipo;
-    var estado = params.estado;
-    var cuartos = params.cuartos;
-    var baños = params.baños;
-    var superficie= params.superficie;
-    var antiguedad =params.antiguedad;
-    var street = params.street;
-    var price = params.price;
-    var neighborhood = params.neighborhood;
+    var Ciudad = params.Ciudad;
+    var Tipo = params.Tipo;
+    var Estado = params.Estado;
+    var Direccion= params.Direccion;
+    var Precio = params.Precio;
+    var Año_de_Construccion = params.Año_de_Construccion;
+    var Superficie_de_Terreno = params.Superficie_de_Terreno;
+    var Numero_de_Cuartos = params.Numero_de_Cuartos;
+    var Numero_de_Baños = params.Numero_de_Baños;
+    var Vecindario = params.Vecindario;
     var over = params.over;
-    if (price == undefined && over == undefined) {
+    if (Precio == undefined && over == undefined) {
 // filtra los datos que tengan en sus atributos lat y lon null;
-Home.find({lat:{$ne:null},lon:{$ne:null}}).exec( (error, docs) => {
+Home.find({Latitud:{$ne:null},Longitud:{$ne:null}}).exec( (error, docs) => {
 res.status(200).json(
   {
     info: docs
@@ -178,7 +175,7 @@ return;
 }
 if (over == "equals") {
     console.log("----------------estos sons iguales-----------------")
-    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:cuartos},{baños:baños},{superficie:superficie},{antiguedad:antiguedad},{price:price}]}).exec( (error, docs) => {
+    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:Numero_de_Cuartos},{Numero_de_Baños:Numero_de_Baños},{Superficie_de_Terreno:Superficie_de_Terreno},{Año_de_Construccion:Año_de_Construccion},{Precio:Precio}]}).exec( (error, docs) => {
       res.status(200).json(
         {
           info: docs
@@ -188,7 +185,7 @@ if (over == "equals") {
     return;
   }else if ( over == "true") {
       console.log("----------------estos sons mayores igual-----------------")
-    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$gte:cuartos}},{baños:{$gte:baños}},{superficie:{$gte:superficie}},{antiguedad:{$gte:antiguedad}},{price:{$gte:price}}]}).exec( (error, docs) => {
+    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:{$gte:Numero_de_Cuartos}},{Numero_de_Baños:{$gte:Numero_de_Baños}},{Superficie_de_Terreno:{$gte:Superficie_de_Terreno}},{Año_de_Construccion:{$gte:AñAño_de_Construccion}},{Precio:{$gte:Precio}}]}).exec( (error, docs) => {
       res.status(200).json(
         {
           info: docs
@@ -197,7 +194,7 @@ if (over == "equals") {
     })
   }else if (over == "false") {
       console.log("----------------estos son los menores/igual-----------------")
-    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$lte:cuartos}},{baños:{$lte:baños}},{superficie:{$lte:superficie}},{antiguedad:{$lte:antiguedad}},{price:{$lte:price}}]}).exec( (error, docs) => {
+    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:{$lte:Numero_de_Cuartos}},{Numero_de_Baños:{$lte:Numero_de_Baños}},{Superficie_de_Terreno:{$lte:Superficie_de_Terreno}},{Año_de_Construccion:{$lte:Año_de_Construccion}},{Precio:{$lte:Precio}}]}).exec( (error, docs) => {
       res.status(200).json(
         {
           info: docs
@@ -209,11 +206,11 @@ if (over == "equals") {
 
 
 // muestra la peticin de acuerdo a un paraetro de busqueda
-  route.get("/home2/search=:srt", (req, res, next) => {
+  router.get("/home2/search=:srt", (req, res, next) => {
     console.log(req.params)
     let search =req.params.srt
 
-    Home.find({estado:new RegExp(search, 'i')}).exec( (error, docs) => {
+    Home.find({Estado:new RegExp(search, 'i')}).exec( (error, docs) => {
       res.status(200).json(
         {
           info: docs
@@ -224,7 +221,7 @@ if (over == "equals") {
 
 
 //home busqueda por _id de home
-route.get('/homeid/:id', (req, res) => {
+router.get('/homeid/:id', (req, res) => {
   var idh = req.params.id;
   console.log(idh)
   Home.findById({_id:idh}).exec((err, docs) => {
@@ -242,34 +239,34 @@ route.get('/homeid/:id', (req, res) => {
 
 
 
-route.get('/list/:email', (req, res) =>{
+router.get('/list/:email', (req, res) =>{
     //res.send({ email:`${req.params.email}`,password:`${req.params.pass}`})
     console.log(req.params)
     let email =req.params.email
 
-    Registro.find({"email":email}, (err, user) =>{
+    Registro.find({"email":email}, (err, usuario) =>{
         if(err) return res.status(500).send({menssage:`Error en la peticion: ${err}`})
-        if(!user) return res.status(404).send({message:`usuario no existe`})
+        if(!usuario) return res.status(404).send({message:`usuario no existe`})
 
-        res.status(200).send({'email':user})
+        res.status(200).send({'email':usuario})
     })
 })
 
-route.get('/login/:email=:password', (req, res) =>{
+router.get('/login/:email=:password', (req, res) =>{
     //res.send({ email:`${req.params.email}`,password:`${req.params.pass}`})
     console.log(req.params)
 
     let email =req.params.email
     let password=req.params.password
 
-    Registro.find({"email":email,"password":password}, (err, user) =>{
+    Registro.find({"email":email,"password":password}, (err, usuario) =>{
         if(err) return res.status(500).send({menssage:`Error en la peticion: ${err}`})
         if(user.length == 0) return res.status(404).send({message:`usuario no existe`})
 
-        res.status(200).send({'email':user})
+        res.status(200).send({'email':usuario})
     })
 })
-route.patch(/home\/[a-z0-9]{1,}$/, (req, res) => {
+router.patch(/home\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
   var keys = Object.keys(req.body);
@@ -291,52 +288,103 @@ route.patch(/home\/[a-z0-9]{1,}$/, (req, res) => {
 });
 //creacion Usuario
 router.post("/usuario", (req, res) => {
+  console.log('POST /api/registro')
+      console.log(req.body)
+
+
+  let usuario = new Usuario()
+  usuario.Nombres = req.body.Nombres,
+  usuario.Apellidos = req.body.Apellidos,
+  usuario.Telefono =req.body.Telefono,
+  usuario.email = req.body.email,
+  usuario.password = req.body.password
+  Usuario.findOne({'email':usuario.email},(err,e)=>{
+          if(e){
+              console.log('email repetido')
+              res.status(404).send({message:`Este email ${usuario.email} ya se encuentra registrado`})
+          }
+          else{
+              usuario.save((err, usuariotStored) =>{
+                  if(err) {
+                    res.status(404).send({messaje: `Error al salvar la base de datos:${err}`})
+                   console.log(err)
+                  }
+                  res.status(200).send(usuariotStored)
+              })
+          }
+
+          //res.status(404).send
+
+      })
+
+      usuario.save((err, usuariotStored) =>{
+          if(err) res.status(500).send({messaje: `Error al savar la base de datos:${err}`})
+
+          //res.status(200).send({usertStored})
+      })
+
+  })
+
+  router.get('/actualizarIP/:ip',(req,res)=>{
+  let nuevaIP = req.params.ip
+  Home.find({},(err,docs)=>{
+
+    docs.map(home=>{
+      let id=home._id
+      let newImgGallery=[]
+      // res.send(home.gallery)
+      for(let i=0;i<home.gallery.length;i++){
+        let imgGallery= home.gallery[i]
+        let ipImg=imgGallery.split('/')
+        ipImg[2]=nuevaIP
+        let stringIP = `${ipImg[0]}//${ipImg[2]}/${ipImg[3]}/${ipImg[4]}/${ipImg[5]}/${ipImg[6]}`
+
+        newImgGallery.push(stringIP)
+
+      };
+      home.gallery = newImgGallery
+      Home.findOneAndUpdate({_id : id}, home, (err, params) => {
+        if(err){
+          res.send({error:'error en la actualizacion'})
+        }else{
+          return
+        }
+      })
+
+    })
+  })
+
+  res.send({message: `IP's actualidas a ${nuevaIP}`})
+
+})
+///////////////////////////////////////////////////////////////////////////
+
+// mostrar vecindarios////////////////////////////////
+router.get("/vecindario", (req, res, next) => {
+
+  Home.find({}).exec((err, datos) =>{
+
+    var Vecindario
+
+    Vecindario = datos.map(data=>(
+       {
+        _id:data._id,
+        Vecindario: data.Vecindario,
+        Latitud: data.Latitud
+      }
+    ))
+    //console.log(vecindario);
+
+    console.log(datos)
+    console.log(err);
+
+      res.status(200).json(Vecindario)
+  })
+})
 
 
 
-var usuario = {
-
-  Nombres : req.body.Nombres,
-  Apellidos : req.body.Apellidos,
-  Telefono :req.body.Telefono,
-  Correo_Electronico : req.body.Correo_Electronico,
-  Password : req.body.Password
-};
-
-var usuarioData = new Usuario(usuario);
-usuarioData.save().then( () =>{
-  res.status(200).json({
-    "msn": "usuario registrado"
-  });
-});
-});
 //read all users
-router.get("/vendedor",(req, res, next) => {
-  Vendedor.find({}).exec((error, docs) => {
-    res.status(200).json(docs);
-  })
-});
-//read only one user
-router.get(/vendedor\/[a-z0-9]{24,24}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Vendedor.findOne({_id : id}).exec((error, docs) => {
-    if  (docs != null) {
-      res.status(200).json(docs);
-      return;
-    }
-    res.status(200).json({
-      "msm" : "No existe el recurso"
-    });
-  })
-});
-router.delete(/vendedor\/[a-z0-9]{24,24}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Vendedor.findOne({_id : id}).remove().exec((error, docs) => {
-    res.status(200).json(docs);
-  });
-});
 
 /* GET home page. */
 module.exports = router;
