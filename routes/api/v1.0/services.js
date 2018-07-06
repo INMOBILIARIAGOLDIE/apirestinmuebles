@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
 
 
 
-  router.post('/homeimg', (req, res) => {
+  route.post('/homeimg', (req, res) => {
     //var url = req.url;
     //console.log(url);
     var id = homeid;
@@ -40,8 +40,8 @@ var storage = multer.diskStorage({
           idhome: id,
           name : req.file.originalname,
           physicalpath: req.file.path,
-          relativepath: `${IP}:4030`
-
+          relativepath: `${HOST}:4030`
+                        //  http://192.168.1.5:4030
         };
         var imgData = new Img(img);
         imgData.save().then( (infoimg) => {
@@ -55,11 +55,11 @@ var storage = multer.diskStorage({
             var data = docs.gallery;
             var aux = new  Array();
             if (data.length == 1 && data[0] == "") {
-              home.gallery.push(`${IP}:4030/api/v1.0/homeimg/` + infoimg._id)
-
+              home.gallery.push(`${HOST}:4030/api/v1.0/homeimg/` + infoimg._id)
+                              //  ("http://localhost:4030/api/v1.0/homeimg/" + infoimg._id)
             } else {
-              aux.push(`${IP}:4030/api/v1.0/homeimg/` + infoimg._id);
-
+              aux.push(`${HOST}:4030/api/v1.0/homeimg/` + infoimg._id);
+                    //  ("http://localhost:4030/api/v1.0/homeimg/" + infoimg._id
               data = data.concat(aux);
               home.gallery = data;
             }
@@ -80,7 +80,6 @@ var storage = multer.diskStorage({
       }
     });
   });
-
 
 
 
