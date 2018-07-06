@@ -1,5 +1,5 @@
 var createError = require('http-errors');
-const IPWIFI = require('./database/collections/IP')
+const IPWIFI = require('./database/collections/HOST')
 
 var express = require('express');
 var path = require('path');
