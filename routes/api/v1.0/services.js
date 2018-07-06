@@ -5,9 +5,9 @@ var fs = require ('fs');
 var router = express.Router();
 //require
 var Home = require("../../../database/collections/homes");
-var Usuario = require("../../../database/collections/usuario");
+var Registro = require("../../../database/collections/users");
 var Img = require("../../../database/collections/img");
-var IP = require('../../../database/collections/IP');
+var HOST = require('../../../database/collections/HOST');
 
 //imagen
 var storage = multer.diskStorage({
