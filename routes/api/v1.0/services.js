@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
 
 
 
-  route.post('/homeimg', (req, res) => {
+  router.post('/homeimg', (req, res) => {
     //var url = req.url;
     //console.log(url);
     var id = homeid;
@@ -109,44 +109,42 @@ router.get(/homeimg\/[a-z0-9]{1,}$/, (req, res) => {
 
 
 //registrar propiedad
-router.post("/home", (req, res) => {
-  if(req.body.Ciudad == " " && req.body.Fecha_de_Entrega== " " ){
 
-    res.status(400).json({
-      "msn": "formato incorrecto"
-    })
-    return;
-  }
+  var homeid;
+  router.post("/home", (req, res) => {
+    //Ejemplo de validacion
+  console.log("request; ",req.body)
 
-var home = {
+    var home = {
+      city: req.body.city,
+      tipo: req.body.tipo,
+      estado : req.body.estado,
+      cuartos : req.body.cuartos,
+      baños : req.body.baños,
+      superficie : req.body.superficie,
+      antiguedad : req.body.antiguedad,
+      street : req.body.street,
+      descripcion : req.body.descripcion,
+      price : req.body.price,
+      lat : req.body.lat,
+      lon : req.body.lon,
+      neighborhood : req.body.neighborhood,
+      gallery : "",
+      contact: req.body.contact
+    };
 
-  Ciudad : req.body.Ciudad,
-  Tipo : req.body.Tipo,
-  Estado:req.body.Estado,
-  Direccion : req.body.Direccion,
-  Precio: req.body.Precio,
-  Año_de_Construccion: req.body.Año_de_Construccion,
-  Superficie_de_Terreno: req.body.Superficie_de_Terreno,
-  Numero_de_Cuartos: req.body.Numero_de_Cuartos,
-  Numero_de_Baños: req.body.Numero_de_Baños,
-  Latitud: req.body.Latitud,
-  Longitud: req.body.Longitud,
-  Vecindario: req.body.Vecindario,
-  Descripcion: req.body.Descripcion,
-  Gallery: "",
-  Numero_de_Contacto: req.body.Numero_de_Contacto
-};
+    var homeData = new Home(home);
 
-var homeData = new Home(home);
-homeData.save().then( () =>{
-  homeid=rr._id;                           //variable que guarda el id de home
-  res.status(200).json({
-  "id" : rr._id,
-  "msn" : "Propiedad registrada con exito "
+    homeData.save().then( (rr) => {
+      //content-type
+      homeid=rr._id;                           //variable que guarda el id de home
+      res.status(200).json({
+        "id" : rr._id,
+        "msn" : "Casa registrada con exito "
+      });
+    });
   });
-  });
-  });
-//read
+
 router.get("/home", (req, res, next) => {
 var params = req.query;
     console.log(params);
