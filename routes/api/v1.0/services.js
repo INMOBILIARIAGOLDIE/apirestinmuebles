@@ -145,60 +145,75 @@ router.get(/homeimg\/[a-z0-9]{1,}$/, (req, res) => {
     });
   });
 
-router.get("/home", (req, res, next) => {
-var params = req.query;
-    console.log(params);
-    var Ciudad = params.Ciudad;
-    var Tipo = params.Tipo;
-    var Estado = params.Estado;
-    var Direccion= params.Direccion;
-    var Precio = params.Precio;
-    var Año_de_Construccion = params.Año_de_Construccion;
-    var Superficie_de_Terreno = params.Superficie_de_Terreno;
-    var Numero_de_Cuartos = params.Numero_de_Cuartos;
-    var Numero_de_Baños = params.Numero_de_Baños;
-    var Vecindario = params.Vecindario;
-    var over = params.over;
-    if (Precio == undefined && over == undefined) {
-// filtra los datos que tengan en sus atributos lat y lon null;
-Home.find({Latitud:{$ne:null},Longitud:{$ne:null}}).exec( (error, docs) => {
-res.status(200).json(
-  {
-    info: docs
+  router.get("/home", (req, res, next) => {
+      var params = req.query;
+      console.log(params);
+      var city = params.city;
+      var tipo = params.tipo;
+      var estado = params.estado;
+      var cuartos = params.cuartos;
+      var baños = params.baños;
+      var superficie= params.superficie;
+      var antiguedad =params.antiguedad;
+      var street = params.street;
+      var price = params.price;
+      var neighborhood = params.neighborhood;
+      var over = params.over;
+      if (price == undefined && over == undefined) {
+  // filtra los datos que tengan en sus atributos lat y lon null;
+  Home.find({lat:{$ne:null},lon:{$ne:null}}).exec( (error, docs) => {
+  res.status(200).json(
+    {
+      info: docs
+    }
+  );
+  })
+  return;
   }
-);
-})
-return;
-}
-if (over == "equals") {
-    console.log("----------------estos sons iguales-----------------")
-    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:Numero_de_Cuartos},{Numero_de_Baños:Numero_de_Baños},{Superficie_de_Terreno:Superficie_de_Terreno},{Año_de_Construccion:Año_de_Construccion},{Precio:Precio}]}).exec( (error, docs) => {
-      res.status(200).json(
-        {
-          info: docs
-        }
-      );
-    })
-    return;
-  }else if ( over == "true") {
-      console.log("----------------estos sons mayores igual-----------------")
-    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:{$gte:Numero_de_Cuartos}},{Numero_de_Baños:{$gte:Numero_de_Baños}},{Superficie_de_Terreno:{$gte:Superficie_de_Terreno}},{Año_de_Construccion:{$gte:AñAño_de_Construccion}},{Precio:{$gte:Precio}}]}).exec( (error, docs) => {
-      res.status(200).json(
-        {
-          info: docs
-        }
-      );
-    })
-  }else if (over == "false") {
-      console.log("----------------estos son los menores/igual-----------------")
-    Home.find({$and:[{Ciudad:Ciudad},{Tipo:Tipo},{Estado:Estado},{Numero_de_Cuartos:{$lte:Numero_de_Cuartos}},{Numero_de_Baños:{$lte:Numero_de_Baños}},{Superficie_de_Terreno:{$lte:Superficie_de_Terreno}},{Año_de_Construccion:{$lte:Año_de_Construccion}},{Precio:{$lte:Precio}}]}).exec( (error, docs) => {
-      res.status(200).json(
-        {
-          info: docs
-        }
-      );
-    })
-  }
+  if (over == "equals") {
+      console.log("----------------estos sons iguales-----------------")
+      Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:cuartos},{baños:baños},{superficie:superficie},{antiguedad:antiguedad},{price:price}]}).exec( (error, docs) => {
+        res.status(200).json(
+          {
+            info: docs
+          }
+        );
+      })
+      return;
+    }else if ( over == "true") {
+        console.log("----------------estos sons mayores igual-----------------")
+      Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$gte:cuartos}},{baños:{$gte:baños}},{superficie:{$gte:superficie}},{antiguedad:{$gte:antiguedad}},{price:{$gte:price}}]}).exec( (error, docs) => {
+        res.status(200).json(
+          {
+            info: docs
+          }
+        );
+      })
+    }else if (over == "false") {
+        console.log("----------------estos son los menores/igual-----------------")
+      Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$lte:cuartos}},{baños:{$lte:baños}},{superficie:{$lte:superficie}},{antiguedad:{$lte:antiguedad}},{price:{$lte:price}}]}).exec( (error, docs) => {
+        res.status(200).json(
+          {
+            info: docs
+          }
+        );
+      })
+    }
+    });
+
+
+  // muestra la peticin de acuerdo a un paraetro de busqueda
+    router.get("/home2/search=:srt", (req, res, next) => {
+      console.log(req.params)
+      let search =req.params.srt
+
+      Home.find({estado:new RegExp(search, 'i')}).exec( (error, docs) => {
+        res.status(200).json(
+          {
+            info: docs
+          }
+        );
+      })
   });
 
 
