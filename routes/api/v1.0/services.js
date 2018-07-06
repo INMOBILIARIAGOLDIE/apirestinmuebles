@@ -286,46 +286,51 @@ router.patch(/home\/[a-z0-9]{1,}$/, (req, res) => {
       return;
   });
 });
-//creacion Usuario
-router.post("/usuario", (req, res) => {
-  console.log('POST /api/registro')
-      console.log(req.body)
+//registro de usuarios
+router.post('/registro', (req, res) =>{
+    console.log('POST /api/registro')
+    console.log(req.body)
+
+    let registro = new Registro()
+    registro.name =req.body.name
+    registro.lastname = req.body.lastname
+    registro.phone = req.body.phone
+    registro.email = req.body.email
+    registro.password = req.body.password
 
 
-  let usuario = new Usuario()
-  usuario.Nombres = req.body.Nombres,
-  usuario.Apellidos = req.body.Apellidos,
-  usuario.Telefono =req.body.Telefono,
-  usuario.email = req.body.email,
-  usuario.password = req.body.password
-  Usuario.findOne({'email':usuario.email},(err,e)=>{
-          if(e){
-              console.log('email repetido')
-              res.status(404).send({message:`Este email ${usuario.email} ya se encuentra registrado`})
-          }
-          else{
-              usuario.save((err, usuariotStored) =>{
-                  if(err) {
-                    res.status(404).send({messaje: `Error al salvar la base de datos:${err}`})
-                   console.log(err)
-                  }
-                  res.status(200).send(usuariotStored)
-              })
-          }
 
-          //res.status(404).send
 
-      })
+    Registro.findOne({'email':registro.email},(err,e)=>{
+        if(e){
+            console.log('email repetido')
+            res.status(404).send({message:`Este email ${registro.email} ya se encuentra registrado`})
+        }
+        else{
+            registro.save((err, usertStored) =>{
+                if(err) {
+                  res.status(404).send({messaje: `Error al salvar la base de datos:${err}`})
+                 console.log(err)
+                }
+                res.status(200).send(usertStored)
+            })
+        }
 
-      usuario.save((err, usuariotStored) =>{
-          if(err) res.status(500).send({messaje: `Error al savar la base de datos:${err}`})
+        //res.status(404).send
 
-          //res.status(200).send({usertStored})
-      })
+    })
 
-  })
+    registro.save((err, usertStored) =>{
+        if(err) res.status(500).send({messaje: `Error al savar la base de datos:${err}`})
 
-  router.get('/actualizarIP/:ip',(req,res)=>{
+        //res.status(200).send({usertStored})
+    })
+
+})
+
+///metodo para actualizar las direcciones de la imagenes (al cambiar de red)  ///////
+
+router.get('/actualizarIP/:ip',(req,res)=>{
   let nuevaIP = req.params.ip
   Home.find({},(err,docs)=>{
 
@@ -345,7 +350,7 @@ router.post("/usuario", (req, res) => {
       home.gallery = newImgGallery
       Home.findOneAndUpdate({_id : id}, home, (err, params) => {
         if(err){
-          res.send({error:'error en la actualizacion'})
+          res.send({error:'eroor en la actualizacion'})
         }else{
           return
         }
@@ -359,18 +364,18 @@ router.post("/usuario", (req, res) => {
 })
 ///////////////////////////////////////////////////////////////////////////
 
-// mostrar vecindarios////////////////////////////////
-router.get("/vecindario", (req, res, next) => {
+// mostra todos vecindarios////////////////////////////////
+router.get("/neighborhood", (req, res, next) => {
 
   Home.find({}).exec((err, datos) =>{
 
-    var Vecindario
+    var vecindario
 
-    Vecindario = datos.map(data=>(
+    vecindario = datos.map(data=>(
        {
         _id:data._id,
-        Vecindario: data.Vecindario,
-        Latitud: data.Latitud
+        neighborhood: data.neighborhood,
+        //lat: data.lat
       }
     ))
     //console.log(vecindario);
@@ -378,11 +383,24 @@ router.get("/vecindario", (req, res, next) => {
     console.log(datos)
     console.log(err);
 
-      res.status(200).json(Vecindario)
+      res.status(200).json(vecindario)
   })
 })
 
 
+// Muestra los vecindarios en funcion de una parala de busqueda
+router.get("/neighborhood/search=:srt", (req, res, next) => {
+  console.log(req.params)
+  let search =req.params.srt
+
+  Home.find({neighborhood:new RegExp(search, 'i')}).exec( (error, docs) => {
+    res.status(200).json(
+      {
+        info: docs
+      }
+    );
+  })
+});
 
 //read all users
 
