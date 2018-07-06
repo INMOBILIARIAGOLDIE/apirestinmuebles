@@ -203,33 +203,21 @@ router.get(/homeimg\/[a-z0-9]{1,}$/, (req, res) => {
 
 
   // muestra la peticin de acuerdo a un paraetro de busqueda
-    router.get("/home2/search=:srt", (req, res, next) => {
-      console.log(req.params)
-      let search =req.params.srt
+  router.get("/home2/search=:srt", (req, res, next) => {
+  console.log(req.params)
+  let search =req.params.srt
 
-      Home.find({estado:new RegExp(search, 'i')}).exec( (error, docs) => {
-        res.status(200).json(
-          {
-            info: docs
-          }
-        );
-      })
-  });
+  Home.find({estado:new RegExp(search, 'i')}).exec( (error, docs) => {
+    res.status(200).json(
+      {
+        info: docs
+      }
+    );
+  })
+});
 
 
 // muestra la peticin de acuerdo a un paraetro de busqueda
-  router.get("/home2/search=:srt", (req, res, next) => {
-    console.log(req.params)
-    let search =req.params.srt
-
-    Home.find({Estado:new RegExp(search, 'i')}).exec( (error, docs) => {
-      res.status(200).json(
-        {
-          info: docs
-        }
-      );
-    })
-});
 
 
 //home busqueda por _id de home
@@ -256,11 +244,11 @@ router.get('/list/:email', (req, res) =>{
     console.log(req.params)
     let email =req.params.email
 
-    Registro.find({"email":email}, (err, usuario) =>{
+    Registro.find({"email":email}, (err, user) =>{
         if(err) return res.status(500).send({menssage:`Error en la peticion: ${err}`})
-        if(!usuario) return res.status(404).send({message:`usuario no existe`})
+        if(!user) return res.status(404).send({message:`usuario no existe`})
 
-        res.status(200).send({'email':usuario})
+        res.status(200).send({'email':user})
     })
 })
 
