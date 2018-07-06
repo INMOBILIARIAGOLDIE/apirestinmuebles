@@ -4,8 +4,8 @@ var usuarioSchema = new Schema({
   Nombres : String,
   Apellidos : String,
   Telefono : Number,
-  Correo_Electronico : String,
-  Password: String
+  email: String,
+  password: String
   signupDate: {type:Date, default:Date.now()}
 })
 

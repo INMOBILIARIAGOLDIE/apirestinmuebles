@@ -98,7 +98,7 @@ router.get(/homeimg\/[a-z0-9]{1,}$/, (req, res) => {
       });
       return;
     }
-    //regresamos la imagen deseada
+    //rvolver a la imagen
     var img = fs.readFileSync("./" + docs.physicalpath);
     //var img = fs.readFileSync("./public/avatars/img.jpg");
     res.contentType('image/jpeg');
@@ -107,69 +107,9 @@ router.get(/homeimg\/[a-z0-9]{1,}$/, (req, res) => {
 });
 
 
-//creacion Vendedor
-
-router.post("/vendedor", (req, res) => {
-  if(req.body.Nombres == " " && req.body.Numero_de_celular == " " ){
-
-    res.status(400).json({
-      "msn": "formato incorrecto"
-    })
-    return;
-  }
-
-var vendedor = {
-
-  Nombres : req.body.Nombres,
-  Apellidos : req.body.Apellidos,
-  Numero_de_celular :req.body.Numero_de_celular,
-  Correo_Electronico : req.body.Correo_Electronico,
-  Sexo : req.body.Sexo
-};
-
-var vendedorData = new Vendedor(vendedor);
-vendedorData.save().then( () =>{
-  res.status(200).json({
-    "msn": "vendedor registrado"
-  });
-});
-});
-//read
-router.get("/vendedor",(req, res, next) => {
-  Vendedor.find({}).exec((error, docs) => {
-    res.status(200).json(docs);
-  })
-});
-//read
-router.get(/vendedor\/[a-z0-9]{24,24}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Vendedor.findOne({_id : id}).exec((error, docs) => {
-    if  (docs != null) {
-      res.status(200).json(docs);
-      return;
-    }
-    res.status(200).json({
-      "msm" : "No existe el recurso"
-    });
-  })
-});
-router.get(/vendedor\/[a-z0-9]{24,24}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Vendedor.findOne({_id : id}).remove().exec((error, docs) => {
-    res.status(200).json(docs);
-  });
-});
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
 
 //registrar propiedad
-router.post("/propiedad", (req, res) => {
+router.post("/home", (req, res) => {
   if(req.body.Ciudad == " " && req.body.Fecha_de_Entrega== " " ){
 
     res.status(400).json({
@@ -178,7 +118,7 @@ router.post("/propiedad", (req, res) => {
     return;
   }
 
-var propiedad = {
+var home = {
 
   Ciudad : req.body.Ciudad,
   Zona : req.body.Zona,
@@ -199,40 +139,154 @@ var propiedad = {
   Latitud: req.body.Latitud,
   Escuelas_Cercanas: req.body.Escuelas_cercanas,
   Descripcion: req.body.Descripcion,
+  Gallery: "",
 };
 
-var propiedadData = new Propiedad(propiedad);
-propiedadData.save().then( () =>{
+var homeData = new Home(home;
+homeData.save().then( () =>{
+  homeid=rr._id;                           //variable que guarda el id de home
   res.status(200).json({
-    "msn": "propiedad registrado"
+  "id" : rr._id,
+  "msn" : "Propiedad registrada con exito "
   });
-});
-});
+  });
+  });
 //read
-router.get("/propiedad",(req, res, next) => {
-  Propiedad.find({}).exec((error, docs) => {
-    res.status(200).json(docs);
-  })
+var params = req.query;
+    console.log(params);
+    var city = params.city;
+    var tipo = params.tipo;
+    var estado = params.estado;
+    var cuartos = params.cuartos;
+    var baños = params.baños;
+    var superficie= params.superficie;
+    var antiguedad =params.antiguedad;
+    var street = params.street;
+    var price = params.price;
+    var neighborhood = params.neighborhood;
+    var over = params.over;
+    if (price == undefined && over == undefined) {
+// filtra los datos que tengan en sus atributos lat y lon null;
+Home.find({lat:{$ne:null},lon:{$ne:null}}).exec( (error, docs) => {
+res.status(200).json(
+  {
+    info: docs
+  }
+);
+})
+return;
+}
+if (over == "equals") {
+    console.log("----------------estos sons iguales-----------------")
+    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:cuartos},{baños:baños},{superficie:superficie},{antiguedad:antiguedad},{price:price}]}).exec( (error, docs) => {
+      res.status(200).json(
+        {
+          info: docs
+        }
+      );
+    })
+    return;
+  }else if ( over == "true") {
+      console.log("----------------estos sons mayores igual-----------------")
+    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$gte:cuartos}},{baños:{$gte:baños}},{superficie:{$gte:superficie}},{antiguedad:{$gte:antiguedad}},{price:{$gte:price}}]}).exec( (error, docs) => {
+      res.status(200).json(
+        {
+          info: docs
+        }
+      );
+    })
+  }else if (over == "false") {
+      console.log("----------------estos son los menores/igual-----------------")
+    Home.find({$and:[{city:city},{tipo:tipo},{estado:estado},{cuartos:{$lte:cuartos}},{baños:{$lte:baños}},{superficie:{$lte:superficie}},{antiguedad:{$lte:antiguedad}},{price:{$lte:price}}]}).exec( (error, docs) => {
+      res.status(200).json(
+        {
+          info: docs
+        }
+      );
+    })
+  }
+  });
+
+
+// muestra la peticin de acuerdo a un paraetro de busqueda
+  route.get("/home2/search=:srt", (req, res, next) => {
+    console.log(req.params)
+    let search =req.params.srt
+
+    Home.find({estado:new RegExp(search, 'i')}).exec( (error, docs) => {
+      res.status(200).json(
+        {
+          info: docs
+        }
+      );
+    })
 });
-//read only on propiedad
-router.get(/propiedad\/[a-z0-9]{24,24}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  Propiedad.findOne({_id : id}).exec((error, docs) => {
-    if  (docs != null) {
-      res.status(200).json(docs);
+
+
+//home busqueda por _id de home
+route.get('/homeid/:id', (req, res) => {
+  var idh = req.params.id;
+  console.log(idh)
+  Home.findById({_id:idh}).exec((err, docs) => {
+    if (err) {
+      res.status(500).json({
+        "msn": "Sucedio algun error en la busqueda"
+
+      });
       return;
     }
-    res.status(200).json({
-      "msm" : "No existe el recurso"
-    });
-  })
+    res.status(200).send(docs);
+  });
 });
-router.delete(/propiedad\/[a-z0-9]{24,24}$/, (req, res) => {
+///////////////// end homes/////////////////
+
+
+
+route.get('/list/:email', (req, res) =>{
+    //res.send({ email:`${req.params.email}`,password:`${req.params.pass}`})
+    console.log(req.params)
+    let email =req.params.email
+
+    Registro.find({"email":email}, (err, user) =>{
+        if(err) return res.status(500).send({menssage:`Error en la peticion: ${err}`})
+        if(!user) return res.status(404).send({message:`usuario no existe`})
+
+        res.status(200).send({'email':user})
+    })
+})
+
+route.get('/login/:email=:password', (req, res) =>{
+    //res.send({ email:`${req.params.email}`,password:`${req.params.pass}`})
+    console.log(req.params)
+
+    let email =req.params.email
+    let password=req.params.password
+
+    Registro.find({"email":email,"password":password}, (err, user) =>{
+        if(err) return res.status(500).send({menssage:`Error en la peticion: ${err}`})
+        if(user.length == 0) return res.status(404).send({message:`usuario no existe`})
+
+        res.status(200).send({'email':user})
+    })
+})
+route.patch(/home\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
-  Propiedad.findOne({_id : id}).remove().exec((error, docs) => {
-    res.status(200).json(docs);
+  var keys = Object.keys(req.body);
+  var home = {};
+  for (var i = 0; i < keys.length; i++) {
+    home[keys[i]] = req.body[keys[i]];
+  }
+  console.log(home);
+  Home.findOneAndUpdate({_id: id}, home, (err, params) => {
+      if(err) {
+        res.status(500).json({
+          "msn": "Error no se pudo actualizar los datos"
+        });
+        return;
+      }
+      res.status(200).json(params);
+      return;
   });
 });
 //creacion Usuario
